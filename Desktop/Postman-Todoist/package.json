@@ -1,0 +1,16 @@
+{
+  "name": "postman-todoist",
+  "version": "1.0.0",
+  "description": "API Testing - Postman",
+  "main": "index.js",
+  "scripts": {
+    "test-positive":"newman run './api_testing/BootcampTodoist.postman_collection.json' -e './api_testing/Bootcamp-Todoist.postman_environment.json'",
+    "test-negative":"newman run './api_testing/NegativeBootcampTodoist.postman_collection.json' -e './api_testing/Bootcamp-Todoist.postman_environment.json'"
+    },
+  "author": "Cesar Guzman",
+  "license": "ISC",
+  "dependencies": {
+    "newman": "^5.3.0",
+    "node": "^17.0.1"
+  }
+}

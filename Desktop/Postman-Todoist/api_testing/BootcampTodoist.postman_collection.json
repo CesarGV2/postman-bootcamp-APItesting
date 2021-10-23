@@ -1,0 +1,764 @@
+{
+	"info": {
+		"_postman_id": "71005a84-a90d-4dfa-b135-4d89396e6647",
+		"name": "BootcampTodoist",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Get active tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate header content\", function(){",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/tasks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set('taskName','Postam Task')",
+									"pm.environment.set('taskdescription','Postam description')"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.environment.set('taskId',jsonData.id)",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Correct Task Name\", function () {",
+									"pm.expect(jsonData.content).to.eql(environment.taskName)",
+									"});",
+									"",
+									"pm.test(\"Correct Task Description\", function () {",
+									"pm.expect(jsonData.description).to.eql(environment.taskdescription)",
+									"});",
+									"",
+									"pm.test('Validate Schema', ()=>{",
+									"    const expectedSchema = {",
+									"        \"properties\":{",
+									"        \"id\": {\"type\":\"number\"},",
+									"        \"content\":{\"type\":\"string\"},",
+									"        \"description\":{\"type\":\"string\"},",
+									"        }",
+									"    };",
+									"    pm.response.to.have.jsonSchema(expectedSchema)",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"{{taskName}}\",\n    \"description\":\"{{taskdescription}}\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/tasks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get an active task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Correct Task Id\", function () {",
+									"pm.expect(jsonData.id).to.eql(environment.taskId)",
+									"});",
+									"",
+									"pm.test(\"Correct Task Name\", function () {",
+									"pm.expect(jsonData.content).to.eql(environment.taskName)",
+									"});",
+									"",
+									"pm.test(\"Correct Task description\", function () {",
+									"pm.expect(jsonData.description).to.eql(environment.taskdescription)",
+									"});",
+									"",
+									"pm.test('Validate Schema', ()=>{",
+									"    const expectedSchema = {",
+									"        \"properties\":{",
+									"        \"id\": {\"type\":\"number\"},",
+									"        \"content\":{\"type\":\"string\"},",
+									"        \"description\":{\"type\":\"string\"},",
+									"        }",
+									"    };",
+									"    pm.response.to.have.jsonSchema(expectedSchema)",
+									"})",
+									"",
+									"pm.environment.unset('taskName')",
+									"pm.environment.unset('taskdescription')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/tasks/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"tasks",
+								"{{taskId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set('newTaskName','Postam Task Updated')",
+									"pm.environment.set('newTaskdescription','Postam description Updated')"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"pm.environment.unset('newTaskdescription')",
+									"pm.environment.unset('newTaskName')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"{{newTaskName}}\",\n    \"description\":\"{{newTaskdescription}}\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/tasks/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"tasks",
+								"{{taskId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close a task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/tasks/{{taskId}}/close",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"tasks",
+								"{{taskId}}",
+								"close"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reopen a task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/tasks/{{taskId}}/reopen",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"tasks",
+								"{{taskId}}",
+								"reopen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.environment.unset('taskId')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/tasks/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"tasks",
+								"{{taskId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pojects",
+			"item": [
+				{
+					"name": "Get all projects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate header content\", function(){",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/projects",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new project",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectName','Postman Project')",
+									"pm.environment.set('projectColor',45)",
+									"pm.environment.set('projectFavorite', true)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.environment.set('projectId',jsonData.id)",
+									"",
+									"pm.test(\"Correct Project Name\", function () {",
+									"pm.expect(jsonData.name).to.eql(environment.projectName)",
+									"});",
+									"",
+									"pm.test(\"Correct Project color\", function () {",
+									"pm.expect(jsonData.color).to.eql(environment.projectColor)",
+									"});",
+									"",
+									"pm.test(\"Correct Project favorite status\", function () {",
+									"pm.expect(jsonData.favorite).to.eql(environment.projectFavorite)",
+									"});",
+									"pm.test('Validate Schema', ()=>{",
+									"    const expectedSchema = {",
+									"        \"properties\":{",
+									"        \"id\": {\"type\":\"number\"},",
+									"        \"name\":{\"type\":\"string\"},",
+									"        \"color\":{\"type\":\"number\"},",
+									"        \"favorite\":{\"type\":\"boolean\"}",
+									"        }",
+									"    };",
+									"    pm.response.to.have.jsonSchema(expectedSchema)",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{projectName}}\",\n    \"color\": \"{{projectColor}}\",\n    \"favorite\":{{projectFavorite}}\n \n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/projects?name={{projectName}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"projects"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{projectName}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json()",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate header content\", function(){",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"",
+									"pm.test(\"Correct Project Name\", function () {",
+									"pm.expect(jsonData.name).to.eql(environment.projectName)",
+									"});",
+									"",
+									"pm.test(\"Correct Project color\", function () {",
+									"pm.expect(jsonData.color).to.eql(environment.projectColor)",
+									"});",
+									"",
+									"pm.test(\"Correct Project favorite status\", function () {",
+									"pm.expect(jsonData.favorite).to.eql(environment.projectFavorite)",
+									"});",
+									"",
+									"pm.test('Validate Schema', ()=>{",
+									"    const expectedSchema = {",
+									"        \"properties\":{",
+									"        \"id\": {\"type\":\"number\"},",
+									"        \"name\":{\"type\":\"string\"},",
+									"        \"color\":{\"type\":\"number\"},",
+									"        \"favorite\":{\"type\":\"boolean\"}",
+									"        }",
+									"    };",
+									"    pm.response.to.have.jsonSchema(expectedSchema)",
+									"})",
+									"",
+									"pm.environment.unset('projectName')",
+									"pm.environment.unset('projectColor')",
+									"pm.environment.unset('projectFavorite')",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/projects/{{projectId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"projects",
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update project",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set('newProjectName','Postman Project Updated')",
+									"pm.environment.set('newProjectColor',38)",
+									"pm.environment.set('newFavorite', false)",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.environment.unset('newProjectName')",
+									"pm.environment.unset('newProjectColor')",
+									"pm.environment.unset('newFavorite')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{newProjectName}}\",\n    \"color\": \"{{newProjectColor}}\",\n    \"favorite\": {{newFavorite}}\n \n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/projects/{{projectId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"projects",
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.environment.unset('projectId')",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.todoist.com/rest/v1/projects/{{projectId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"todoist",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"projects",
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Response time is less than 700ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+					"});"
+				]
+			}
+		}
+	]
+}
