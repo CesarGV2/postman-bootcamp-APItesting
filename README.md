@@ -7,7 +7,7 @@ this project is aim to automated the test of Todoist's API, using postman and ne
 1. Clone this rapository.
 2. Open de project on a IDE.
 3. Open a the terminal.
-4. Install the depencencies by running *npm install* on the command line.
+4. Install the depencencies by running: *npm install* on the command line.
 
 ## Techonolgies:
 - Postman
