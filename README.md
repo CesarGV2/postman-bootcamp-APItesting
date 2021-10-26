@@ -1,7 +1,7 @@
 # postman-bootcamp-APItesting
 
 ## Description
-this project is aim to automated the test of Todoist's API, using postman and newman.
+This project is aim to automated the test of Todoist's API using postman and newman.
 
 ## Installation
 1. Clone this repository.
