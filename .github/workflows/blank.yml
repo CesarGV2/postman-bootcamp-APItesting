@@ -24,6 +24,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: matt-ball/newman-action@master
+        with:
+            collection: Postman-Todoist/api_testing/BootcampTodoist.postman_collection.json
+            environment: Postman-Todoist/api_testing/Bootcamp-Todoist.postman_environment.json
+
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
