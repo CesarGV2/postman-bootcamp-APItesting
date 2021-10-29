@@ -227,7 +227,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.environment.set('emptyTaskId','')"
+									"pm.environment.set('invalidTaskId',1)"
 								],
 								"type": "text/javascript"
 							}
@@ -241,10 +241,10 @@
 									"});",
 									"",
 									"pm.test(\"Validate error message\", function () {",
-									"    pm.expect(pm.response.text()).to.include(\"404 page not found\");",
+									"    pm.expect(pm.response.text()).to.include(\"Task not found\");",
 									"});",
 									"",
-									"pm.environment.unset('emptyTaskId')",
+									"pm.environment.unset('invalidTaskId')",
 									"",
 									""
 								],
@@ -265,7 +265,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://api.todoist.com/rest/v1/tasks/{{emptyTaskId}}/close",
+							"raw": "https://api.todoist.com/rest/v1/tasks/{{invalidTaskId}}/close",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -276,7 +276,7 @@
 								"rest",
 								"v1",
 								"tasks",
-								"{{emptyTaskId}}",
+								"{{invalidTaskId}}",
 								"close"
 							]
 						}
@@ -290,7 +290,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									""
+									"pm.environment.set('invalidTaskId','1')"
 								],
 								"type": "text/javascript"
 							}
@@ -299,13 +299,15 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 400\", function () {",
-									"    pm.response.to.have.status(400);",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
 									"});",
 									"",
 									"pm.test(\"Validate error message\", function () {",
-									"    pm.expect(pm.response.text()).to.include(\"Item not found\");",
+									"    pm.expect(pm.response.text()).to.include(\"Task not found\");",
 									"});",
+									"",
+									"pm.environment.unset('invalidTaskId')",
 									""
 								],
 								"type": "text/javascript"
@@ -364,10 +366,10 @@
 									"});",
 									"",
 									"pm.test(\"Validate error message\", function () {",
-									"    pm.expect(pm.response.text()).to.include(\"Item not found\");",
+									"    pm.expect(pm.response.text()).to.include(\"Task id is invalid\");",
 									"});",
 									"",
-									"pm.environment.unset('invalidTaskId')"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -386,7 +388,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://api.todoist.com/rest/v1/tasks/{{invalidTaskId}}",
+							"raw": "https://api.todoist.com/rest/v1/tasks/{{emptyTaskId}}",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -397,7 +399,7 @@
 								"rest",
 								"v1",
 								"tasks",
-								"{{invalidTaskId}}"
+								"{{emptyTaskId}}"
 							]
 						}
 					},
@@ -472,7 +474,11 @@
 									"});",
 									"pm.test(\"Validate error message\", function () {",
 									"    pm.expect(pm.response.text()).to.include(\"Name must be provided for the project creation\");",
-									"});"
+									"});",
+									"",
+									"pm.environment.unset('projectColor')",
+									"pm.environment.unset('projectFavorite')",
+									""
 								],
 								"type": "text/javascript"
 							}
