@@ -16,4 +16,4 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "17.x"
-          run: npm run test-positive
+      - run: npm run test-positive
