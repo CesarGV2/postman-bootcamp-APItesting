@@ -4,16 +4,16 @@ name: Integration
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   API_Testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: matt-ball/newman-action@master
+      - uses: setup/node@v1
         with:
-          node-version: '17.x'
+          node-version: "17.x"
           run: npm run test-positive
